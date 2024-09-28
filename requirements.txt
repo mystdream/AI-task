@@ -12,6 +12,7 @@ opencv-python
 
 # NLP and text processing
 tensorflow==2.16.2
+keras==2.15.0 
 transformers==4.44.2
 pytesseract==0.3.13
 # Data manipulation and visualization
