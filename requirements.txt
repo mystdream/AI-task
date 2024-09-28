@@ -1,20 +1,19 @@
 # Core libraries
-streamlit==1.24.0
-pillow==9.1.1
+streamlit
+pillow
 numpy
 
 # Deep learning frameworks
 torch
 torchvision
-tensorflow==2.11.0  # Ensure compatibility with tf-keras
 
 # Computer vision and image processing
 opencv-python
 
 # NLP and text processing
-transformers==4.28.0  # Use a version compatible with TensorFlow 2
 pytesseract
-
+tensorflow==2.15.0
+transformers==4.44.2
 # Data manipulation and visualization
 pandas
 matplotlib
