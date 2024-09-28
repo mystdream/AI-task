@@ -24,11 +24,33 @@ def save_object(object_image, object_id, master_id, output_dir):
     cv2.imwrite(filepath, object_image)
     return filepath
 
-def store_metadata(conn, object_id, master_id, filepath):
-    """Store object metadata in the SQLite database."""
+def process_object(object_image, object_id, master_id, output_dir, conn, 
+                   id_model, char_model, text_model, sum_model):
+    # Identify object
+    object_class = id_model.identify_object(object_image)
+
+    # Detect text regions
+    text_regions = char_model.detect_text_regions(object_image)
+
+    # Extract text from regions
+    extracted_text = ""
+    for (startX, startY, endX, endY) in text_regions:
+        roi = object_image[startY:endY, startX:endX]
+        text = text_model.extract_text(roi)
+        extracted_text += text + " "
+
+    # Summarize attributes
+    summary = sum_model.summarize_text(f"{object_class}. {extracted_text}")
+
+    # Save object and store metadata
+    filepath = save_object(object_image, object_id, master_id, output_dir)
+    store_metadata(conn, object_id, master_id, filepath, object_class, extracted_text, summary)
+
+def store_metadata(conn, object_id, master_id, filepath, object_class, extracted_text, summary):
     cursor = conn.cursor()
     cursor.execute('''
-        INSERT INTO objects (object_id, master_id, filepath)
-        VALUES (?, ?, ?)
-    ''', (object_id, master_id, filepath))
+        INSERT OR REPLACE INTO objects 
+        (object_id, master_id, filepath, object_class, extracted_text, summary)
+        VALUES (?, ?, ?, ?, ?, ?)
+    ''', (object_id, master_id, filepath, object_class, extracted_text, summary))
     conn.commit()
