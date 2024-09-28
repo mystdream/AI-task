@@ -1,16 +1,20 @@
+# Core libraries
+streamlit
+pillow
+numpy
+
+# Deep learning frameworks
 torch
 torchvision
-git+https://github.com/facebookresearch/detectron2.git
+tensorflow
+
+# Computer vision and image processing
 opencv-python
-numpy
-Pillow
+
+# NLP and text processing
 transformers
-easyocr
 pytesseract
-pyzbar
-matplotlib
-sumy
-streamlit
-pytest
-sqlite3
+
+# Data manipulation and visualization
 pandas
+matplotlib
