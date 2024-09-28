@@ -1,0 +1,16 @@
+torch
+torchvision
+detectron2
+opencv-python
+numpy
+Pillow
+transformers
+easyocr
+pytesseract
+pyzbar
+matplotlib
+sumy
+streamlit
+pytest
+sqlite3
+pandas
