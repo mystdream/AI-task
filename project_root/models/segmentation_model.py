@@ -1,19 +1,24 @@
 import torch
 import torchvision
-from detectron2 import model_zoo
-from detectron2.engine import DefaultPredictor
-from detectron2.config import get_cfg
-from detectron2.utils.visualizer import Visualizer
-from detectron2.data import MetadataCatalog
 
-class SegmentationModel:
-    def __init__(self):
-        self.cfg = get_cfg()
-        self.cfg.merge_from_file(model_zoo.get_config_file("COCO-InstanceSegmentation/mask_rcnn_R_50_FPN_3x.yaml"))
-        self.cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.5
-        self.cfg.MODEL.WEIGHTS = model_zoo.get_checkpoint_url("COCO-InstanceSegmentation/mask_rcnn_R_50_FPN_3x.yaml")
-        self.predictor = DefaultPredictor(self.cfg)
 
-    def segment_image(self, image):
-        outputs = self.predictor(image)
-        return outputs
+def load_segmentation_model():
+    # Load a pre-trained Mask R-CNN model
+    model = torchvision.models.detection.maskrcnn_resnet50_fpn(pretrained=True)
+    model.eval()
+    return model
+
+
+def segment_image(model, image):
+    # Perform segmentation on the input image
+    with torch.no_grad():
+        prediction = model([image])
+
+    masks = prediction[0]['masks']
+    scores = prediction[0]['scores']
+
+    # Filter out low-confidence predictions
+    mask_threshold = 0.5
+    high_confidence_masks = masks[scores > mask_threshold]
+
+    return high_confidence_masks

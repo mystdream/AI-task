@@ -1,12 +1,11 @@
-from sumy.parsers.plaintext import PlaintextParser
-from sumy.nlp.tokenizers import Tokenizer
-from sumy.summarizers.lsa import LsaSummarizer
+from transformers import pipeline
 
-class SummarizationModel:
-    def __init__(self):
-        self.summarizer = LsaSummarizer()
+def load_summarization_model():
+    # Load a pre-trained summarization model
+    summarizer = pipeline("summarization", model="facebook/bart-large-cnn")
+    return summarizer
 
-    def summarize_text(self, text, sentences_count=3):
-        parser = PlaintextParser.from_string(text, Tokenizer("english"))
-        summary = self.summarizer(parser.document, sentences_count)
-        return " ".join([str(sentence) for sentence in summary])
+def summarize_text(summarizer, text):
+    # Generate a summary of the input text
+    summary = summarizer(text, max_length=130, min_length=30, do_sample=False)
+    return summary[0]['summary_text']
